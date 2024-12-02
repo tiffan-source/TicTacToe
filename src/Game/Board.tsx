@@ -16,8 +16,24 @@ function Board({ game }: { game: GameType }) {
 
   const intervalRef = useRef<number | null>(null);
 
+    const transformArray = (array: string[], rowSize: number): string[][] => {
+        const result: string[][] = [];
+        for (let i = 0; i < array.length; i += rowSize) {
+            result.push(array.slice(i, i + rowSize));
+        }
+        return result;
+    };  
+
+
   // Start and manage the game timer
   useEffect(() => {
+
+    if(game.gameType === 2)
+    {
+        setBoard(transformArray(game.board, 3));
+        setTurn(game.turn);
+    }
+
     intervalRef.current = window.setInterval(() => {
       setTimer((prev) => prev - 1);
       setGameDuration((prev) => prev + 1);
@@ -113,7 +129,6 @@ function Board({ game }: { game: GameType }) {
 
       const gameStatusResult = checkGameStatus(updatedBoard);
       if (gameStatusResult !== null) {
-        console.log("Game over", gameStatusResult);
         await stopGameAndSaveInHistory(gameStatusResult);
       }
 
@@ -129,7 +144,11 @@ function Board({ game }: { game: GameType }) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
-    console.log(`Game finished with result: ${gameStatusResult}`);
+
+    if (gam) {
+        
+    }
+
     await axios.post("http://localhost:5000/tictactoe", {
         player1: game.joueur1,
         player2: game.joueur2,
@@ -146,6 +165,7 @@ function Board({ game }: { game: GameType }) {
   };
 
   const save = async () => {
+
     const result = await axios.post("http://localhost:5000/tictactoe", {
       player1: game.joueur1,
       player2: game.joueur2,
