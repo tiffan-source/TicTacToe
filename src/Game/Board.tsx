@@ -145,10 +145,6 @@ function Board({ game }: { game: GameType }) {
       intervalRef.current = null;
     }
 
-    if (gam) {
-        
-    }
-
     await axios.post("http://localhost:5000/tictactoe", {
         player1: game.joueur1,
         player2: game.joueur2,
